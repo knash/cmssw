@@ -519,7 +519,7 @@ class PFJetIDSelectionFunctor : public Selector<pat::Jet>  {
       if ( ignoreCut(indexNNeutrals_EC_)  || ( nneutrals > cut(indexNNeutrals_EC_, int())  || std::abs(jet.eta()) <= 2.7 || std::abs(jet.eta()) > 3.0)  ) passCut( ret, indexNNeutrals_EC_);
 
       // Cuts for |eta| > 3.0 for WINTER17 scenario
-      if ( ignoreCut(indexNHF_FW_)           || ( nef > cut(indexNHF_FW_, double()) || std::abs(jet.eta()) <= 3.0 ) ) passCut( ret, indexNHF_FW_);
+      if ( ignoreCut(indexNHF_FW_)           || ( nhf > cut(indexNHF_FW_, double()) || std::abs(jet.eta()) <= 3.0 ) ) passCut( ret, indexNHF_FW_);
       if ( ignoreCut(indexNEF_FW_)           || ( nef < cut(indexNEF_FW_, double()) || std::abs(jet.eta()) <= 3.0 ) ) passCut( ret, indexNEF_FW_);
       if ( ignoreCut(indexNNeutrals_FW_) || ( nneutrals > cut(indexNNeutrals_FW_, int())    || std::abs(jet.eta()) <= 3.0 ) ) passCut( ret, indexNNeutrals_FW_);
     }
