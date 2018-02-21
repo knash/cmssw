@@ -17,28 +17,28 @@ softActivityJets2 = cms.EDFilter("CandPtrSelector", src = cms.InputTag("chsForSA
 
 looseJetId = cms.EDProducer("PatJetIDValueMapProducer",
 			  filterParams=cms.PSet(
-			    version = cms.string('WINTER17'),
-			    quality = cms.string('TIGHT'),
+			    version = cms.string('WINTER16'),
+			    quality = cms.string('LOOSE'),
 			  ),
                           src = cms.InputTag("slimmedJets")
 )
 tightJetId = cms.EDProducer("PatJetIDValueMapProducer",
 			  filterParams=cms.PSet(
-			    version = cms.string('WINTER17'),
+			    version = cms.string('WINTER16'),
 			    quality = cms.string('TIGHT'),
 			  ),
                           src = cms.InputTag("slimmedJets")
 )
 looseJetIdAK8 = cms.EDProducer("PatJetIDValueMapProducer",
 			  filterParams=cms.PSet(
-			    version = cms.string('WINTER17'),
-			    quality = cms.string('TIGHT'),
+			    version = cms.string('WINTER16'),
+			    quality = cms.string('LOOSE'),
 			  ),
                           src = cms.InputTag("slimmedJetsAK8")
 )
 tightJetIdAK8 = cms.EDProducer("PatJetIDValueMapProducer",
 			  filterParams=cms.PSet(
-			    version = cms.string('WINTER17'),
+			    version = cms.string('WINTER16'),
 			    quality = cms.string('TIGHT'),
 			  ),
                           src = cms.InputTag("slimmedJetsAK8")
