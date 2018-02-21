@@ -84,13 +84,18 @@ class PFJetIDSelectionFunctor : public Selector<pat::Jet>  {
       push_back("nNeutrals_FW");
     }
  
+
+    if(version_ == WINTER17 && quality_ == LOOSE ){
+      edm::LogWarning("BadJetIDversion") << "Winter17 JetID version does not support the LOOSE operating point -- changing to TIGHT";
+      quality_ = TIGHT;
+      }
  
 
     // Set some default cuts for LOOSE, TIGHT
     if ( quality_ == LOOSE ) {
       set("CHF", 0.0);
       set("NHF", 0.99);
-      if(version_ != WINTER17) set("CEF", 0.99);
+      set("CEF", 0.99);
       set("NEF", 0.99);
       set("NCH", 0);
       set("nConstituents", 1);
@@ -235,7 +240,10 @@ class PFJetIDSelectionFunctor : public Selector<pat::Jet>  {
     }
 
 
-
+    if(version_ == WINTER17 && quality_ == LOOSE ){
+      edm::LogWarning("BadJetIDversion") << "Winter17 JetID version does not support the LOOSE operating point -- changing to TIGHT";
+      quality_ = TIGHT;
+      }
     // Set some default cuts for LOOSE, TIGHT
     if ( quality_ == LOOSE ) {
       set("CHF", 0.0);
@@ -255,6 +263,10 @@ class PFJetIDSelectionFunctor : public Selector<pat::Jet>  {
 	set("NEF_FW",0.90);
 	set("nNeutrals_FW",10);
       }
+
+
+
+
 
     } else if ( quality_ == TIGHT ) {
       set("CHF", 0.0);
