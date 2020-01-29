@@ -267,6 +267,28 @@ def nanoAOD_runMETfixEE2017(process,isData):
                                postfix = "FixEE2017")
     process.nanoSequenceCommon.insert(process.nanoSequenceCommon.index(jetSequence),process.fullPatMetSequenceFixEE2017)
 
+
+def nanoAOD_addImageInfoAK8(process):
+
+    _btagDiscriminators = ['pfDeepFlavourJetTags:probb', 'pfDeepFlavourJetTags:probbb', 'pfDeepFlavourJetTags:probuds', 'pfDeepFlavourJetTags:probg' , 'pfDeepFlavourJetTags:problepb', 'pfDeepFlavourJetTags:probc']
+    updateJetCollection(
+       process,
+       labelName = 'SoftDropSubjets',
+       postfix = 'SubjetsWithDeepInfo',
+       jetSource = cms.InputTag('slimmedJetsAK8PFPuppiSoftDropPacked:SubJets'),
+       jetCorrections = ('AK4PFPuppi', cms.vstring(['L2Relative', 'L3Absolute']), 'None'),
+       btagDiscriminators = _btagDiscriminators,
+       explicitJTA = True,          
+       svClustering = False,       
+       fatJets = cms.InputTag('slimmedJetsAK8'), 
+       rParam = 0.8,               
+       algo = 'ak'        
+    )
+
+    process.updatedSubjetsAK8.jetSource="selectedUpdatedPatJetsSoftDropSubjetsSubjetsWithDeepInfo"
+    return process
+
+
 def nanoAOD_customizeCommon(process):
 #    makePuppiesFromMiniAOD(process,True) # call this here as it calls switchOnVIDPhotonIdProducer
     process = nanoAOD_activateVID(process)
@@ -286,6 +308,8 @@ def nanoAOD_customizeCommon(process):
         nanoAOD_addDeepDoubleX_switch = cms.untracked.bool(True), 
         jecPayload = cms.untracked.string('AK8PFPuppi')
         )
+    process = nanoAOD_addImageInfoAK8(process)
+
     # deepAK8 should not run on 80X, that contains ak8PFJetsCHS jets
     run2_miniAOD_80XLegacy.toModify(nanoAOD_addDeepInfoAK8_switch,
                                     nanoAOD_addDeepBTag_switch = cms.untracked.bool(True),
