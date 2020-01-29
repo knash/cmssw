@@ -173,10 +173,32 @@ finalJets = cms.EDFilter("PATJetRefSelector",
     cut = cms.string("pt > 15")
 )
 
+
+updatedJetsAK8WithImagetag = cms.EDProducer('ImageProducer',
+        src=cms.InputTag('updatedJetsAK8WithUserData'),
+        sj=cms.InputTag('updatedSubjetsAK8'),
+        pb_path=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/top_MC_output.pb'),
+        pb_pathMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/top_MD_output.pb'),
+        pb_pathPhoMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/pho_nolep_MD_doubleB_output.pb'),
+        pb_pathW=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/w_MC_output.pb'),
+        pb_pathWMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/w_MD_output.pb'),
+        pb_pathH=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/hbb_nolep_MC_doubleB_output.pb'),
+        pb_pathHMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/hbb_nolep_MD_doubleB_output.pb'),
+        pb_pathZ=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/z_nolep_MC_doubleB_output.pb'),
+        pb_pathZMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/z_nolep_MD_doubleB_output.pb'),
+        pb_pathWWMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/ww_MD_output.pb'),
+        pb_pathWWlepMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/wwlep_MD_output.pb'),
+        pb_pathHWWMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/hww_MD_output.pb'),
+        pb_pathHWWlepMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/hwwlep_MD_output.pb')
+)   
+
+
 finalJetsAK8 = cms.EDFilter("PATJetRefSelector",
-    src = cms.InputTag("updatedJetsAK8WithUserData"),
+    src = cms.InputTag("updatedJetsAK8WithImagetag"),
     cut = cms.string("pt > 170")
 )
+
+
 
 
 
@@ -420,6 +442,17 @@ fatJetTable = cms.EDProducer("SimpleCandidateFlatTableProducer",
         deepTagMD_H4qvsQCD = Var("bDiscriminator('pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:H4qvsQCD')",float,doc="Mass-decorrelated DeepBoostedJet tagger H->4q vs QCD discriminator",precision=10),
         deepTagMD_bbvsLight = Var("bDiscriminator('pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:bbvsLight')",float,doc="Mass-decorrelated DeepBoostedJet tagger Z/H/gluon->bb vs light flavour discriminator",precision=10),
         deepTagMD_ccvsLight = Var("bDiscriminator('pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ccvsLight')",float,doc="Mass-decorrelated DeepBoostedJet tagger Z/H/gluon->cc vs light flavour discriminator",precision=10),
+        itop=Var("userFloat('Image:top')", float, doc="Image top tagger score", precision=-1),
+        iMDtop=Var("userFloat('ImageMD:top')", float, doc="Image MD top tagger score", precision=-1),
+        iMDPho=Var("userFloat('ImageMD:pho')", float, doc="Image MD photonjet tagger score", precision=-1),
+        iW=Var("userFloat('Image:w')", float, doc="Image w tagger score", precision=-1),
+        iMDW=Var("userFloat('ImageMD:w')", float, doc="Image MD w tagger score", precision=-1),
+        iMDH=Var("userFloat('ImageMD:h')", float, doc="Image MD h tagger score", precision=-1),
+        iMDZ=Var("userFloat('ImageMD:z')", float, doc="Image MD z tagger score", precision=-1),
+        iMDWW=Var("userFloat('ImageMD:ww')", float, doc="Image MD ww->qqqq tagger score", precision=-1),
+        iMDWWlep=Var("userFloat('ImageMD:wwlep')", float, doc="Image MD ww->lnuqq tagger score", precision=-1),
+        iMDHWW=Var("userFloat('ImageMD:hww')", float, doc="Image MD h->ww->qqqq tagger score", precision=-1),
+        iMDHWWlep=Var("userFloat('ImageMD:hwwlep')", float, doc="Image MD h->ww->lnuqq tagger score", precision=-1),
         subJetIdx1 = Var("?nSubjetCollections()>0 && subjets('SoftDropPuppi').size()>0?subjets('SoftDropPuppi')[0].key():-1", int,
 		     doc="index of first subjet"),
         subJetIdx2 = Var("?nSubjetCollections()>0 && subjets('SoftDropPuppi').size()>1?subjets('SoftDropPuppi')[1].key():-1", int,
@@ -628,6 +661,7 @@ from RecoJets.JetProducers.QGTagger_cfi import  QGTagger
 qgtagger=QGTagger.clone(srcJets="updatedJets",srcVertexCollection="offlineSlimmedPrimaryVertices")
 
 #before cross linking
+
 jetSequence = cms.Sequence(jetCorrFactorsNano+updatedJets+tightJetId+tightJetIdLepVeto+bJetVars+jercVars+qgtagger+updatedJetsWithUserData+jetCorrFactorsAK8+updatedJetsAK8+tightJetIdAK8+tightJetIdLepVetoAK8+updatedJetsAK8WithUserData+chsForSATkJets+softActivityJets+softActivityJets2+softActivityJets5+softActivityJets10+finalJets+finalJetsAK8)
 
 _jetSequence_2016 = jetSequence.copy()
