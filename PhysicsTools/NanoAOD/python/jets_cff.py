@@ -51,15 +51,6 @@ updatedJetsAK8 = updatedPatJets.clone(
 )
 
 
-updatedSubjetsAK8 = updatedPatJets.clone(
-	addBTagInfo=True,
-	jetSource=cms.InputTag("slimmedJetsAK8PFPuppiSoftDropPacked","SubJets"),
-    	addJetCorrFactors = False,
-
-	#jetCorrFactorsSource=cms.VInputTag(cms.InputTag("jetCorrFactorsAK8") ),
-)
-
-
 
 looseJetId = cms.EDProducer("PatJetIDValueMapProducer",
 			  filterParams=cms.PSet(
@@ -186,7 +177,7 @@ finalJets = cms.EDFilter("PATJetRefSelector",
 
 updatedJetsAK8WithImagetag = cms.EDProducer('ImageProducer',
         src=cms.InputTag('updatedJetsAK8WithUserData'),
-        sj=cms.InputTag('updatedSubjetsAK8'),
+        sj=cms.InputTag('slimmedJetsAK8PFPuppiSoftDropPacked:SubJets'),
         pb_path=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/top_MC_output.pb'),
         pb_pathMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/top_MD_output.pb'),
         pb_pathPhoMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/pho_nolep_MD_doubleB_output.pb'),
@@ -672,7 +663,7 @@ qgtagger=QGTagger.clone(srcJets="updatedJets",srcVertexCollection="offlineSlimme
 
 #before cross linking
 
-jetSequence = cms.Sequence(jetCorrFactorsNano+updatedJets+updatedSubjetsAK8+tightJetId+tightJetIdLepVeto+bJetVars+jercVars+qgtagger+updatedJetsWithUserData+jetCorrFactorsAK8+updatedJetsAK8+tightJetIdAK8+tightJetIdLepVetoAK8+updatedJetsAK8WithUserData+updatedJetsAK8WithImagetag+chsForSATkJets+softActivityJets+softActivityJets2+softActivityJets5+softActivityJets10+finalJets+finalJetsAK8)
+jetSequence = cms.Sequence(jetCorrFactorsNano+updatedJets+tightJetId+tightJetIdLepVeto+bJetVars+jercVars+qgtagger+updatedJetsWithUserData+jetCorrFactorsAK8+updatedJetsAK8+tightJetIdAK8+tightJetIdLepVetoAK8+updatedJetsAK8WithUserData+updatedJetsAK8WithImagetag+chsForSATkJets+softActivityJets+softActivityJets2+softActivityJets5+softActivityJets10+finalJets+finalJetsAK8)
 
 _jetSequence_2016 = jetSequence.copy()
 _jetSequence_2016.insert(_jetSequence_2016.index(tightJetId), looseJetId)
