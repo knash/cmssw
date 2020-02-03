@@ -249,7 +249,7 @@ def nanoAOD_addDeepInfoAK8(process,addDeepBTag,addDeepBoostedJet, addDeepDoubleX
        jetSource = cms.InputTag('slimmedJetsAK8'),
        pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
        svSource = cms.InputTag('slimmedSecondaryVertices'),
-       rParam = 0.8,
+       rParam = 0.4,
        jetCorrections = (jecPayload.value(), cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None'),
        btagDiscriminators = _btagDiscriminators,
        postfix='AK8WithDeepInfo',
@@ -276,16 +276,18 @@ def nanoAOD_addImageInfoAK8(process):
        labelName = 'SoftDropSubjets',
        postfix = 'SubjetsWithDeepInfo',
        jetSource = cms.InputTag('slimmedJetsAK8PFPuppiSoftDropPacked:SubJets'),
-       jetCorrections = ('AK4PFPuppi', cms.vstring(['L2Relative', 'L3Absolute']), 'None'),
+       pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
+       svSource = cms.InputTag('slimmedSecondaryVertices'),
+       jetCorrections = ('AK4PFPuppi', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None'),
        btagDiscriminators = _btagDiscriminators,
-       explicitJTA = True,          
-       svClustering = False,       
+       explicitJTA = True,   
+       #svClustering = True,              
        fatJets = cms.InputTag('slimmedJetsAK8'), 
        rParam = 0.8,               
        algo = 'ak'        
     )
 
-    process.updatedSubjetsAK8.jetSource="selectedUpdatedPatJetsSoftDropSubjetsSubjetsWithDeepInfo"
+    process.updatedJetsAK8WithImagetag.sj="selectedUpdatedPatJetsSoftDropSubjetsSubjetsWithDeepInfo"
     return process
 
 
