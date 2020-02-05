@@ -250,7 +250,7 @@ def nanoAOD_addDeepInfoAK8(process,addDeepBTag,addDeepBoostedJet, addDeepDoubleX
        jetSource = cms.InputTag('slimmedJetsAK8'),
        pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
        svSource = cms.InputTag('slimmedSecondaryVertices'),
-       rParam = 0.4,
+       rParam = 0.8,
        jetCorrections = (jecPayload.value(), cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None'),
        btagDiscriminators = _btagDiscriminators,
        postfix='AK8WithDeepInfo',
