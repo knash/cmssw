@@ -287,7 +287,7 @@ def nanoAOD_addImageInfoAK8(process):
        algo = 'ak'        
     )
 
-    process.updatedJetsAK8WithImagetag.sj="selectedUpdatedPatJetsSoftDropSubjetsSubjetsWithDeepInfo"
+    process.finalJetsAK8WithImagetag.sj="selectedUpdatedPatJetsSoftDropSubjetsSubjetsWithDeepInfo"
     return process
 
 

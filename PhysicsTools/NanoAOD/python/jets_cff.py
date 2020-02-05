@@ -175,32 +175,33 @@ finalJets = cms.EDFilter("PATJetRefSelector",
 )
 
 
-updatedJetsAK8WithImagetag = cms.EDProducer('ImageProducer',
-        src=cms.InputTag('updatedJetsAK8WithUserData'),
-        sj=cms.InputTag('slimmedJetsAK8PFPuppiSoftDropPacked:SubJets'),
-        pb_path=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/top_MC_output.pb'),
-        pb_pathMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/top_MD_output.pb'),
-        pb_pathPhoMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/pho_nolep_MD_doubleB_output.pb'),
-        pb_pathW=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/w_MC_output.pb'),
-        pb_pathWMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/w_MD_output.pb'),
-        pb_pathH=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/hbb_nolep_MC_doubleB_output.pb'),
-        pb_pathHMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/hbb_nolep_MD_doubleB_output.pb'),
-        pb_pathZ=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/z_nolep_MC_doubleB_output.pb'),
-        pb_pathZMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/z_nolep_MD_doubleB_output.pb'),
-        pb_pathWWMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/ww_MD_output.pb'),
-        pb_pathWWlepMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/wwlep_MD_output.pb'),
-        pb_pathHWWMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/hww_MD_output.pb'),
-        pb_pathHWWlepMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/hwwlep_MD_output.pb')
-)   
-
 
 finalJetsAK8 = cms.EDFilter("PATJetRefSelector",
-    src = cms.InputTag("updatedJetsAK8WithImagetag"),
+    src = cms.InputTag("updatedJetsAK8WithUserData"),
     cut = cms.string("pt > 170")
 )
 
 
 
+
+finalJetsAK8WithImagetag = cms.EDProducer('ImageProducer',
+        src=cms.InputTag('finalJetsAK8'),
+        sj=cms.InputTag('slimmedJetsAK8PFPuppiSoftDropPacked:SubJets'),
+        pb_path=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/top_MC_output_v2.pb'),
+        pb_pathMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/top_MD_output_v2.pb'),
+        pb_pathPhoMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/pho_MD_doubleB_output_v2.pb'),
+        pb_pathW=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/w_MC_output_v2.pb'),
+        pb_pathWMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/w_MD_output_v2.pb'),
+        pb_pathHbb=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/hbb_MC_doubleB_doubleB_output_v2.pb'),
+        pb_pathHbbMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/hbb_MD_doubleB_doubleB_output_v2.pb'),
+        pb_pathHccMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/hcc_MD_doubleB_output_v2.pb'),
+        pb_pathZ=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/z_MC_doubleB_doubleB_output_v2.pb'),
+        pb_pathZMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/z_MD_doubleB_doubleB_output_v2.pb'),
+        pb_pathWWMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/ww_MD_doubleB_output_v2.pb'),
+        pb_pathWWlepMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/wwlep_MD_doubleB_output_v2.pb'),
+        pb_pathHWWMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/hww_MD_doubleB_output_v2.pb'),
+        pb_pathHWWlepMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/hwwlep_MD_doubleB_output_v2.pb')
+)   
 
 
 
@@ -400,7 +401,7 @@ saTable = cms.EDProducer("GlobalVariablesTableProducer",
 
 ## BOOSTED STUFF #################
 fatJetTable = cms.EDProducer("SimpleCandidateFlatTableProducer",
-    src = cms.InputTag("finalJetsAK8"),
+    src = cms.InputTag("finalJetsAK8WithImagetag"),
     cut = cms.string(" pt > 170"), #probably already applied in miniaod
     name = cms.string("FatJet"),
     doc  = cms.string("slimmedJetsAK8, i.e. ak8 fat jets for boosted analysis"),
@@ -448,7 +449,9 @@ fatJetTable = cms.EDProducer("SimpleCandidateFlatTableProducer",
         iMDPho=Var("userFloat('ImageMD:pho')", float, doc="Image MD photonjet tagger score", precision=-1),
         iW=Var("userFloat('Image:w')", float, doc="Image w tagger score", precision=-1),
         iMDW=Var("userFloat('ImageMD:w')", float, doc="Image MD w tagger score", precision=-1),
-        iMDH=Var("userFloat('ImageMD:h')", float, doc="Image MD h tagger score", precision=-1),
+        iHbb=Var("userFloat('Image:hbb')", float, doc="Image hbb tagger score", precision=-1),
+        iMDHbb=Var("userFloat('ImageMD:hbb')", float, doc="Image MD hbb tagger score", precision=-1),
+        iMDHcc=Var("userFloat('ImageMD:hcc')", float, doc="Image MD hcc tagger score", precision=-1),
         iMDZ=Var("userFloat('ImageMD:z')", float, doc="Image MD z tagger score", precision=-1),
         iMDWW=Var("userFloat('ImageMD:ww')", float, doc="Image MD ww->qqqq tagger score", precision=-1),
         iMDWWlep=Var("userFloat('ImageMD:wwlep')", float, doc="Image MD ww->lnuqq tagger score", precision=-1),
@@ -663,7 +666,7 @@ qgtagger=QGTagger.clone(srcJets="updatedJets",srcVertexCollection="offlineSlimme
 
 #before cross linking
 
-jetSequence = cms.Sequence(jetCorrFactorsNano+updatedJets+tightJetId+tightJetIdLepVeto+bJetVars+jercVars+qgtagger+updatedJetsWithUserData+jetCorrFactorsAK8+updatedJetsAK8+tightJetIdAK8+tightJetIdLepVetoAK8+updatedJetsAK8WithUserData+updatedJetsAK8WithImagetag+chsForSATkJets+softActivityJets+softActivityJets2+softActivityJets5+softActivityJets10+finalJets+finalJetsAK8)
+jetSequence = cms.Sequence(jetCorrFactorsNano+updatedJets+tightJetId+tightJetIdLepVeto+bJetVars+jercVars+qgtagger+updatedJetsWithUserData+jetCorrFactorsAK8+updatedJetsAK8+tightJetIdAK8+tightJetIdLepVetoAK8+updatedJetsAK8WithUserData+chsForSATkJets+softActivityJets+softActivityJets2+softActivityJets5+softActivityJets10+finalJets+finalJetsAK8+finalJetsAK8WithImagetag)
 
 _jetSequence_2016 = jetSequence.copy()
 _jetSequence_2016.insert(_jetSequence_2016.index(tightJetId), looseJetId)
