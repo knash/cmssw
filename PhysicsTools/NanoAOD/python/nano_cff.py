@@ -282,8 +282,8 @@ def nanoAOD_addImageInfoAK8(process):
        jetCorrections = ('AK4PFPuppi', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None'),
        btagDiscriminators = _btagDiscriminators,
        explicitJTA = True,   
-       #svClustering = True,              
-       fatJets = cms.InputTag('slimmedJetsAK8'), 
+       svClustering = True,              
+       fatJets = cms.InputTag('selectedUpdatedPatJetsAK8WithDeepInfo'), 
        rParam = 0.8,               
        algo = 'ak'        
     )
