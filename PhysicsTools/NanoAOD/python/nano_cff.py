@@ -270,20 +270,17 @@ def nanoAOD_runMETfixEE2017(process,isData):
 
 
 def nanoAOD_addImageInfoAK8(process):
-
+    #organize with other updateJetCollection calls   
     _btagDiscriminators = ['pfDeepFlavourJetTags:probb', 'pfDeepFlavourJetTags:probbb', 'pfDeepFlavourJetTags:probuds', 'pfDeepFlavourJetTags:probg' , 'pfDeepFlavourJetTags:problepb', 'pfDeepFlavourJetTags:probc']
     updateJetCollection(
        process,
        labelName = 'SoftDropSubjets',
        postfix = 'SubjetsWithDeepInfo',
        jetSource = cms.InputTag('slimmedJetsAK8PFPuppiSoftDropPacked:SubJets'),
-       pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
-       svSource = cms.InputTag('slimmedSecondaryVertices'),
        jetCorrections = ('AK4PFPuppi', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None'),
        btagDiscriminators = _btagDiscriminators,
        explicitJTA = True,   
-       svClustering = True,              
-       fatJets = cms.InputTag('selectedUpdatedPatJetsAK8WithDeepInfo'), 
+       fatJets = cms.InputTag('slimmedJetsAK8'), 
        rParam = 0.8,               
        algo = 'ak'        
     )

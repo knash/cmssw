@@ -172,17 +172,9 @@ finalJets = cms.EDFilter("PATJetRefSelector",
     cut = cms.string("pt > 15")
 )
 
-
-
 finalJetsAK8 = cms.EDFilter("PATJetRefSelector",
     src = cms.InputTag("updatedJetsAK8WithUserData"),
     cut = cms.string("pt > 170")
-)
-
-lepInJetVars = cms.EDProducer("LepInJetProducer",
-    src = cms.InputTag("updatedJetsAK8WithUserData"),
-    srcEle = cms.InputTag("finalElectrons"),
-    srcMu = cms.InputTag("finalMuons")
 )
 
 
@@ -204,6 +196,18 @@ finalJetsAK8WithImagetag = cms.EDProducer('ImageProducer',
         pb_pathHWWMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/hww_MD_doubleB_output_v2.pb'),
         pb_pathHWWlepMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/hwwlep_MD_doubleB_output_v2.pb')
 )   
+
+
+
+
+
+lepInJetVars = cms.EDProducer("LepInJetProducer",
+    src = cms.InputTag("finalJetsAK8WithImagetag"),
+    srcEle = cms.InputTag("finalElectrons"),
+    srcMu = cms.InputTag("finalMuons")
+)
+
+
 
 
 
