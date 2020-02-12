@@ -20,6 +20,7 @@ struct ImageTFCache {
   std::atomic<tensorflow::GraphDef*> graphDefHbbMD;
   std::atomic<tensorflow::GraphDef*> graphDefHccMD;
   std::atomic<tensorflow::GraphDef*> graphDefZMD;
+  std::atomic<tensorflow::GraphDef*> graphDefZ;
   std::atomic<tensorflow::GraphDef*> graphDefWWMD;
   std::atomic<tensorflow::GraphDef*> graphDefWWlepMD;
   std::atomic<tensorflow::GraphDef*> graphDefHWWMD;
@@ -53,6 +54,7 @@ private:
   tensorflow::Session* tfsessionHbbMD_;
   tensorflow::Session* tfsessionHccMD_;
   tensorflow::Session* tfsessionZMD_;
+  tensorflow::Session* tfsessionZ_;
   tensorflow::Session* tfsessionWWMD_;
   tensorflow::Session* tfsessionWWlepMD_;
   tensorflow::Session* tfsessionHWWMD_;
@@ -70,6 +72,7 @@ private:
   edm::FileInPath pb_pathHbbMD_;
   edm::FileInPath pb_pathHccMD_;
   edm::FileInPath pb_pathZMD_;
+  edm::FileInPath pb_pathZ_;
   edm::FileInPath pb_pathWWMD_;
   edm::FileInPath pb_pathWWlepMD_;
   edm::FileInPath pb_pathHWWMD_;
@@ -88,6 +91,7 @@ ImageProducer::ImageProducer(const edm::ParameterSet& iConfig, const ImageTFCach
       tfsessionHbbMD_(nullptr),
       tfsessionHccMD_(nullptr),
       tfsessionZMD_(nullptr),
+      tfsessionZ_(nullptr),
       tfsessionWWMD_(nullptr),
       tfsessionWWlepMD_(nullptr),
       tfsessionHWWMD_(nullptr),
@@ -108,6 +112,7 @@ ImageProducer::ImageProducer(const edm::ParameterSet& iConfig, const ImageTFCach
   tfsessionHbbMD_ = tensorflow::createSession(cache_->graphDefHbbMD, sessionOptions);
   tfsessionHccMD_ = tensorflow::createSession(cache_->graphDefHccMD, sessionOptions);
   tfsessionZMD_ = tensorflow::createSession(cache_->graphDefZMD, sessionOptions);
+  tfsessionZ_ = tensorflow::createSession(cache_->graphDefZ, sessionOptions);
   tfsessionWWMD_ = tensorflow::createSession(cache_->graphDefWWMD, sessionOptions);
   tfsessionWWlepMD_ = tensorflow::createSession(cache_->graphDefWWlepMD, sessionOptions);
   tfsessionHWWMD_ = tensorflow::createSession(cache_->graphDefHWWMD, sessionOptions);
@@ -132,6 +137,8 @@ ImageProducer::~ImageProducer() {
     tensorflow::closeSession(tfsessionHccMD_);
   if (tfsessionZMD_ != nullptr)
     tensorflow::closeSession(tfsessionZMD_);
+  if (tfsessionZ_ != nullptr)
+    tensorflow::closeSession(tfsessionZ_);
   if (tfsessionWWMD_ != nullptr)
     tensorflow::closeSession(tfsessionWWMD_);
   if (tfsessionWWlepMD_ != nullptr)
@@ -167,6 +174,8 @@ std::unique_ptr<ImageTFCache> ImageProducer::initializeGlobalCache(const edm::Pa
       tensorflow::loadGraphDef(iConfig.getUntrackedParameter<edm::FileInPath>("pb_pathHccMD").fullPath());
   cache->graphDefZMD =
       tensorflow::loadGraphDef(iConfig.getUntrackedParameter<edm::FileInPath>("pb_pathZMD").fullPath());
+  cache->graphDefZ =
+      tensorflow::loadGraphDef(iConfig.getUntrackedParameter<edm::FileInPath>("pb_pathZ").fullPath());
   cache->graphDefWWMD =
       tensorflow::loadGraphDef(iConfig.getUntrackedParameter<edm::FileInPath>("pb_pathWWMD").fullPath());
   cache->graphDefWWlepMD =
@@ -255,6 +264,7 @@ void ImageProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
   std::vector<float> itopdiscHbbMD = {};
   std::vector<float> itopdiscHccMD = {};
   std::vector<float> itopdiscZMD = {};
+  std::vector<float> itopdiscZ = {};
   std::vector<float> itopdiscWWMD = {};
   std::vector<float> itopdiscWWlepMD = {};
   std::vector<float> itopdiscHWWMD = {};
@@ -274,6 +284,7 @@ void ImageProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     itopdiscHbbMD.push_back(-10.0);
     itopdiscHccMD.push_back(-10.0);
     itopdiscZMD.push_back(-10.0);
+    itopdiscZ.push_back(-10.0);
     itopdiscWWMD.push_back(-10.0);
     itopdiscWWlepMD.push_back(-10.0);
     itopdiscHWWMD.push_back(-10.0);
@@ -522,6 +533,7 @@ void ImageProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     itopdiscHbbMD[jindex] = runTFlow(tfsessionHbbMD_, input_image, input_b, 4);
     itopdiscHccMD[jindex] = runTFlow(tfsessionHccMD_, input_image, input_b, 4);
     itopdiscZMD[jindex] = runTFlow(tfsessionZMD_, input_image, input_b, 4);
+    itopdiscZ[jindex] = runTFlow(tfsessionZ_, input_image, input_b, 4);
     itopdiscWWMD[jindex] = runTFlow(tfsessionWWMD_, input_image, input_b, 4);
     itopdiscWWlepMD[jindex] = runTFlow(tfsessionWWlepMD_, input_image, input_b, 4);
     itopdiscHWWMD[jindex] = runTFlow(tfsessionHWWMD_, input_image, input_b, 4);
@@ -546,6 +558,7 @@ void ImageProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     newJet.addUserFloat("ImageMD:hbb", itopdiscHbbMD[jindex]);
     newJet.addUserFloat("ImageMD:hcc", itopdiscHccMD[jindex]);
     newJet.addUserFloat("ImageMD:z", itopdiscZMD[jindex]);
+    newJet.addUserFloat("Image:z", itopdiscZ[jindex]);
     newJet.addUserFloat("ImageMD:ww", itopdiscWWMD[jindex]);
     newJet.addUserFloat("ImageMD:wwlep", itopdiscWWlepMD[jindex]);
     newJet.addUserFloat("ImageMD:hww", itopdiscHWWMD[jindex]);
