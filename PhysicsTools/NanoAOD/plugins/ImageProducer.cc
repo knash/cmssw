@@ -63,6 +63,8 @@ private:
   const edm::EDGetTokenT<edm::View<pat::Jet>> src_;
   const edm::EDGetTokenT<edm::View<pat::Jet>> sj_;
 
+  float minpt_;
+
   edm::FileInPath pb_path_;
   edm::FileInPath pb_pathMD_;
   edm::FileInPath pb_pathPhoMD_;
@@ -97,7 +99,8 @@ ImageProducer::ImageProducer(const edm::ParameterSet& iConfig, const ImageTFCach
       tfsessionHWWMD_(nullptr),
       tfsessionHWWlepMD_(nullptr),
       src_(consumes<edm::View<pat::Jet>>(iConfig.getParameter<edm::InputTag>("src"))),
-      sj_(consumes<edm::View<pat::Jet>>(iConfig.getParameter<edm::InputTag>("sj"))) {
+      sj_(consumes<edm::View<pat::Jet>>(iConfig.getParameter<edm::InputTag>("sj"))), 
+      minpt_(iConfig.getParameter<double>("minpt")){
   produces<pat::JetCollection>();
 
   tensorflow::SessionOptions sessionOptions;
@@ -289,7 +292,7 @@ void ImageProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     itopdiscWWlepMD.push_back(-10.0);
     itopdiscHWWMD.push_back(-10.0);
     itopdiscHWWlepMD.push_back(-10.0);
-
+    if(AK8pfjet.pt()<minpt_)continue;
     TLorentzVector curtlv;
     curtlv.SetPtEtaPhiM(AK8pfjet.pt(), AK8pfjet.eta(), AK8pfjet.phi(), AK8pfjet.mass());
 
@@ -360,23 +363,12 @@ void ImageProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
       }
     }
 
-    TLorentzVector gjet;
-
-    std::vector<pat::Jet> sjvec;
-    std::vector<pat::Jet> sjvecmatch;
 
     for (const auto& subjet : *subjets) {
-      sjvec.push_back(subjet);
       sublv.SetPtEtaPhiM(subjet.pt(), subjet.eta(), subjet.phi(), subjet.mass());
 
       if (sublv.DeltaR(curtlv) > mergeval || sjlist.size() >= (nsubs * 6))
         continue;
-      sjvecmatch.push_back(subjet);
-      if (sjlist.size() == 0)
-        gjet = sublv;
-      else
-        gjet += sublv;
-
       sjlist.push_back(subjet.bDiscriminator("pfDeepFlavourJetTags:probb"));
       sjlist.push_back(subjet.bDiscriminator("pfDeepFlavourJetTags:probbb"));
       sjlist.push_back(subjet.bDiscriminator("pfDeepFlavourJetTags:probuds"));

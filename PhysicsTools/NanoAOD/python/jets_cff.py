@@ -172,15 +172,10 @@ finalJets = cms.EDFilter("PATJetRefSelector",
     cut = cms.string("pt > 15")
 )
 
-finalJetsAK8 = cms.EDFilter("PATJetRefSelector",
-    src = cms.InputTag("updatedJetsAK8WithUserData"),
-    cut = cms.string("pt > 170")
-)
-
-
-finalJetsAK8WithImagetag = cms.EDProducer('ImageProducer',
-        src=cms.InputTag('finalJetsAK8'),
+updatedJetsAK8WithImagetag = cms.EDProducer('ImageProducer',
+        src=cms.InputTag('updatedJetsAK8WithUserData'),
         sj=cms.InputTag('slimmedJetsAK8PFPuppiSoftDropPacked:SubJets'),
+        minpt=cms.double(170.0),
         pb_path=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/top_MC_output_v2.pb'),
         pb_pathMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/top_MD_output_v2.pb'),
         pb_pathPhoMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/pho_MD_doubleB_output_v2.pb'),
@@ -198,11 +193,19 @@ finalJetsAK8WithImagetag = cms.EDProducer('ImageProducer',
 )   
 
 
+finalJetsAK8 = cms.EDFilter("PATJetRefSelector",
+    src = cms.InputTag("updatedJetsAK8WithImagetag"),
+    cut = cms.string("pt > 170")
+)
+
+
+
+
 
 
 
 lepInJetVars = cms.EDProducer("LepInJetProducer",
-    src = cms.InputTag("finalJetsAK8WithImagetag"),
+    src = cms.InputTag("updatedJetsAK8WithImagetag"),
     srcEle = cms.InputTag("finalElectrons"),
     srcMu = cms.InputTag("finalMuons")
 )
@@ -407,7 +410,7 @@ saTable = cms.EDProducer("GlobalVariablesTableProducer",
 
 ## BOOSTED STUFF #################
 fatJetTable = cms.EDProducer("SimpleCandidateFlatTableProducer",
-    src = cms.InputTag("finalJetsAK8WithImagetag"),
+    src = cms.InputTag("finalJetsAK8"),
     cut = cms.string(" pt > 170"), #probably already applied in miniaod
     name = cms.string("FatJet"),
     doc  = cms.string("slimmedJetsAK8, i.e. ak8 fat jets for boosted analysis"),
@@ -678,7 +681,7 @@ qgtagger=QGTagger.clone(srcJets="updatedJets",srcVertexCollection="offlineSlimme
 
 #before cross linking
 
-jetSequence = cms.Sequence(jetCorrFactorsNano+updatedJets+tightJetId+tightJetIdLepVeto+bJetVars+jercVars+qgtagger+updatedJetsWithUserData+jetCorrFactorsAK8+updatedJetsAK8+tightJetIdAK8+tightJetIdLepVetoAK8+updatedJetsAK8WithUserData+chsForSATkJets+softActivityJets+softActivityJets2+softActivityJets5+softActivityJets10+finalJets+finalJetsAK8+finalJetsAK8WithImagetag)
+jetSequence = cms.Sequence(jetCorrFactorsNano+updatedJets+tightJetId+tightJetIdLepVeto+bJetVars+jercVars+qgtagger+updatedJetsWithUserData+jetCorrFactorsAK8+updatedJetsAK8+tightJetIdAK8+tightJetIdLepVetoAK8+updatedJetsAK8WithUserData+chsForSATkJets+softActivityJets+softActivityJets2+softActivityJets5+softActivityJets10+finalJets+updatedJetsAK8WithImagetag+finalJetsAK8)
 
 _jetSequence_2016 = jetSequence.copy()
 _jetSequence_2016.insert(_jetSequence_2016.index(tightJetId), looseJetId)
