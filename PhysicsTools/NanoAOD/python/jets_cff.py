@@ -51,7 +51,6 @@ updatedJetsAK8 = updatedPatJets.clone(
 )
 
 
-
 looseJetId = cms.EDProducer("PatJetIDValueMapProducer",
 			  filterParams=cms.PSet(
 			    version = cms.string('WINTER16'),
@@ -192,28 +191,16 @@ updatedJetsAK8WithImagetag = cms.EDProducer('ImageProducer',
         pb_pathHWWlepMD=cms.untracked.FileInPath('PhysicsTools/NanoAOD/data/Image/hwwlep_MD_doubleB_output_v2.pb')
 )   
 
-
 finalJetsAK8 = cms.EDFilter("PATJetRefSelector",
     src = cms.InputTag("updatedJetsAK8WithImagetag"),
     cut = cms.string("pt > 170")
 )
-
-
-
-
-
-
 
 lepInJetVars = cms.EDProducer("LepInJetProducer",
     src = cms.InputTag("updatedJetsAK8WithImagetag"),
     srcEle = cms.InputTag("finalElectrons"),
     srcMu = cms.InputTag("finalMuons")
 )
-
-
-
-
-
 
 ##################### Tables for final output and docs ##########################
 
@@ -460,7 +447,7 @@ fatJetTable = cms.EDProducer("SimpleCandidateFlatTableProducer",
         iMDW=Var("userFloat('ImageMD:w')", float, doc="Image MD w tagger score", precision=-1),
         iHbb=Var("userFloat('Image:hbb')", float, doc="Image hbb tagger score", precision=-1),
         iMDHbb=Var("userFloat('ImageMD:hbb')", float, doc="Image MD hbb tagger score", precision=-1),
-        #iMDHcc=Var("userFloat('ImageMD:hcc')", float, doc="Image MD hcc tagger score", precision=-1), to add
+        iMDHcc=Var("userFloat('ImageMD:hcc')", float, doc="Image MD hcc tagger score", precision=-1),
         iZ=Var("userFloat('Image:z')", float, doc="Image MD z tagger score", precision=-1),
         iMDZ=Var("userFloat('ImageMD:z')", float, doc="Image MD z tagger score", precision=-1),
         iMDWW=Var("userFloat('ImageMD:ww')", float, doc="Image MD ww->qqqq tagger score", precision=-1),
@@ -680,7 +667,6 @@ from RecoJets.JetProducers.QGTagger_cfi import  QGTagger
 qgtagger=QGTagger.clone(srcJets="updatedJets",srcVertexCollection="offlineSlimmedPrimaryVertices")
 
 #before cross linking
-
 jetSequence = cms.Sequence(jetCorrFactorsNano+updatedJets+tightJetId+tightJetIdLepVeto+bJetVars+jercVars+qgtagger+updatedJetsWithUserData+jetCorrFactorsAK8+updatedJetsAK8+tightJetIdAK8+tightJetIdLepVetoAK8+updatedJetsAK8WithUserData+chsForSATkJets+softActivityJets+softActivityJets2+softActivityJets5+softActivityJets10+finalJets+updatedJetsAK8WithImagetag+finalJetsAK8)
 
 _jetSequence_2016 = jetSequence.copy()

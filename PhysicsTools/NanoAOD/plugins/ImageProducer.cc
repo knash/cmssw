@@ -99,8 +99,8 @@ ImageProducer::ImageProducer(const edm::ParameterSet& iConfig, const ImageTFCach
       tfsessionHWWMD_(nullptr),
       tfsessionHWWlepMD_(nullptr),
       src_(consumes<edm::View<pat::Jet>>(iConfig.getParameter<edm::InputTag>("src"))),
-      sj_(consumes<edm::View<pat::Jet>>(iConfig.getParameter<edm::InputTag>("sj"))), 
-      minpt_(iConfig.getParameter<double>("minpt")){
+      sj_(consumes<edm::View<pat::Jet>>(iConfig.getParameter<edm::InputTag>("sj"))),
+      minpt_(iConfig.getParameter<double>("minpt")) {
   produces<pat::JetCollection>();
 
   tensorflow::SessionOptions sessionOptions;
@@ -177,8 +177,7 @@ std::unique_ptr<ImageTFCache> ImageProducer::initializeGlobalCache(const edm::Pa
       tensorflow::loadGraphDef(iConfig.getUntrackedParameter<edm::FileInPath>("pb_pathHccMD").fullPath());
   cache->graphDefZMD =
       tensorflow::loadGraphDef(iConfig.getUntrackedParameter<edm::FileInPath>("pb_pathZMD").fullPath());
-  cache->graphDefZ =
-      tensorflow::loadGraphDef(iConfig.getUntrackedParameter<edm::FileInPath>("pb_pathZ").fullPath());
+  cache->graphDefZ = tensorflow::loadGraphDef(iConfig.getUntrackedParameter<edm::FileInPath>("pb_pathZ").fullPath());
   cache->graphDefWWMD =
       tensorflow::loadGraphDef(iConfig.getUntrackedParameter<edm::FileInPath>("pb_pathWWMD").fullPath());
   cache->graphDefWWlepMD =
@@ -292,7 +291,8 @@ void ImageProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     itopdiscWWlepMD.push_back(-10.0);
     itopdiscHWWMD.push_back(-10.0);
     itopdiscHWWlepMD.push_back(-10.0);
-    if(AK8pfjet.pt()<minpt_)continue;
+    if (AK8pfjet.pt() < minpt_)
+      continue;
     TLorentzVector curtlv;
     curtlv.SetPtEtaPhiM(AK8pfjet.pt(), AK8pfjet.eta(), AK8pfjet.phi(), AK8pfjet.mass());
 
@@ -312,8 +312,8 @@ void ImageProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for (int idau = 0; idau < ndau; idau++) {
       const pat::PackedCandidate* lPack = dynamic_cast<const pat::PackedCandidate*>(AK8pfjet.daughter(idau));
       if ((lPack != nullptr) && (lPack->puppiWeight() > 0)) {
+        //For the case that phi loops over
         float dphi = reco::deltaPhi(lPack->phi(), curtlv.Phi());
-
         TLorentzVector pfclv;
         pfclv.SetPtEtaPhiM(lPack->pt(), lPack->eta(), curtlv.Phi() + dphi, lPack->mass());
 
@@ -362,7 +362,6 @@ void ImageProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
         idaufill += 1;
       }
     }
-
 
     for (const auto& subjet : *subjets) {
       sublv.SetPtEtaPhiM(subjet.pt(), subjet.eta(), subjet.phi(), subjet.mass());

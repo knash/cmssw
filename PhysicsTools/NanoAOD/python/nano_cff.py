@@ -268,7 +268,6 @@ def nanoAOD_runMETfixEE2017(process,isData):
                                postfix = "FixEE2017")
     process.nanoSequenceCommon.insert(process.nanoSequenceCommon.index(jetSequence),process.fullPatMetSequenceFixEE2017)
 
-
 def nanoAOD_addImageInfoAK8(process):
     #organize with other updateJetCollection calls   
     _btagDiscriminators = ['pfDeepFlavourJetTags:probb', 'pfDeepFlavourJetTags:probbb', 'pfDeepFlavourJetTags:probuds', 'pfDeepFlavourJetTags:probg' , 'pfDeepFlavourJetTags:problepb', 'pfDeepFlavourJetTags:probc']
@@ -287,7 +286,6 @@ def nanoAOD_addImageInfoAK8(process):
 
     process.updatedJetsAK8WithImagetag.sj="selectedUpdatedPatJetsSoftDropSubjetsSubjetsWithDeepInfo"
     return process
-
 
 def nanoAOD_customizeCommon(process):
 #    makePuppiesFromMiniAOD(process,True) # call this here as it calls switchOnVIDPhotonIdProducer
